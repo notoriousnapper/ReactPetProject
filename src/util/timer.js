@@ -9,16 +9,19 @@
  /*
   * Less known arrays/ etc.
   */
-
 // READ: https://stackoverflow.com/questions/8126466/how-do-i-reset-the-setinterval-timer
 
 
 var numberList = [1,2,3,4,5,6,7,8,9];
-// Simple Random Print
+var music = ['c','d','e','f','g','a','b']; // MAKE SURGE PAGE FOR YOURSELF ASAP ---> for future practice
+var dummyLists = {
+  numberListOne: numberList,
+  music: music
+  // "letter": numberList,
+}
 
-var printFn = console.log;
+var printFn = (item)=>{console.log(item);} // Bound Function
 var invokeRandomlyOnListItem= (list, fn) => {
-  // Make sure both inputs are there (javascript not defined to must have)
   var index = Math.floor(Math.random()*list.length);
   fn(list[index]);
 }
@@ -28,69 +31,72 @@ var invokeRandomlyOnListItem= (list, fn) => {
 // TODO: - MMRZ how to do this/ CACHE it in BOOSTNOTES! LEGGO!
 // "BASIC Notes"
 
-invokeRandomlyOnListItem(numberList, alert);
-invokeRandomlyOnListItem(numberList, printFn);
-
 // TODO: Change this into a class!
 // Written this way b/c of readability
 // THIS FUNCTION CONFIGURES, RUNS, AND RETURNS A TIMER OBJECT
 // Own by objects to make easier ---> one wrapper plz .start() .stop()
 // REVIEW JS BINDING TOMORROW = TIMER + Object + Setting
 
-var configureAndRunTimer = (list, fn, speed)=>{ // Should be FN Array in future
-  let buildFn = ()=>{invokeRandomlyOnListItem(list, fn);}
-  return setInterval(buildFn, speed);
-}
-var timer = configureAndRunTimer(numberList, printFn, speed);
-clearInterval(timer);
-
-// Have a speedMap
-var speed = {
-  1: 1000,
-  2: 2000,
-  3: 3000
-}
-
 // timer(numberList, printFn, 3000);
 // timer.configure() // figure out async later
 // timer.start() // should be like this
-var timerObject = {
+// var timer = {
+
+// MAIN purpose is to house "invokeRandmolyOnListItem",
+// Might not even be necessary, extract if needed
+var createRandomizer = function(newList, fn){
+  return {
+  list: newList,
+  fn: function(testFn){ // meat of object
+    invokeRandomlyOnListItem(this.list, testFn)
+    console.log("LIST being called: ", this.list);
+    }
+  }
+};
+
+var createTimer = function(){
+  return {
   timer: null,
   config: {},
-  specialConfig: function(){
-    this.configureTimer.bind(this);
-  }
-  configureTimer: function(list, fn, speed){
-    this.config = {
+  configure: function(list, fn, speed){
+    let newConfig =  {
       list: list,
-      builtFn: fn,
+      builtFn: fn, // TODO: --> Need to take care of case where it will
+                  // Utilize the list within --> might just be an object wtihin
+                  // b/c you don't need to run with a randomizer function
       speed: speed // add map or sth
     }
-    console.log("Built config list: " + list);
-    console.log("Built config fn: " + fn);
-    console.log("Built config speed: " + speed);
-    console.log(this.config);
-    console.log("THAT IS THIS" + this);
-  }.bind(this),
+    this.config = newConfig; // Clearer set
 
-  startTimer: function(){
+    console.log("New Config: " + this.config);
+    console.log("Reference to This: " + this);
+  },
+
+  start: function(){
     console.log("Starting Timer!");
+    console.log("CONFIG" + this.config.speed);
+    console.log("BUILT FN: " + this.config.builtFn);
     this.timer = setInterval(this.config.builtFn, this.config.speed);
-  }.bind(this),
-
-  stopTimer: function(){
+  },
+  stop: function(){
     console.log("Stopping Timer!");
     clearInterval(this.timer)
-  }.bind(this)
+    console.log(this.timer);
+  }
+  // TO ANSWER: what happens if I bind when I don't need to --> like to this functions
+  // SEEMS TO GIVE THE WRONG RESULT
+}
 }
 
 
 // HARDCODED FOR NOW
 // JUST DELIVER FIRST SO YOU CAN PRACTICE! --> @TONIGHT
-// @TONIGHT: RVW JAVASCRIPT BINDING OF THIS FFS ====> 
+// @TONIGHT: RVW JAVASCRIPT BINDING OF THIS FFS ====>
 var config = {
   list: numberList,
   fn: printFn,
   speed: 3000
 }
-exports.createTimer = configureAndRunTimer;
+exports.createTimer = createTimer;
+exports.invokeFunctionOnList = invokeRandomlyOnListItem;
+exports.createRandomizer = createRandomizer;

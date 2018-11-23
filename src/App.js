@@ -4,6 +4,7 @@ import './App.css';
 import lottie from 'lottie-web';
 import SearchBar from './components/searchbar/SearchBar.js';
 import SongPage from './components/songpage/SongPage.js';
+import Randomizer from './components/randomizer/Randomizer.js';
 
 
 class App extends Component {
@@ -54,6 +55,7 @@ class App extends Component {
        <button onClick={this.pauseAnimation}> PAUSE</button>
        <button onClick={this.playAnimation}> PLAY </button>
        <SongPage></SongPage>
+       <Randomizer />
       </div>
     );
   }
